@@ -22,8 +22,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .httpBasic(basic -> basic.disable()) // 👈 desactiva autenticación básica
-                .formLogin(form -> form.disable())   // 👈 desactiva login de formulario
+                .httpBasic(basic -> basic.disable()) // desactiva autenticación básica
+                .formLogin(form -> form.disable())   // desactiva login de formulario
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
