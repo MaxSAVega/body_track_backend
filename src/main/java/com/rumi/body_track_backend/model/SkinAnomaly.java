@@ -25,7 +25,7 @@ public class SkinAnomaly {
     private String shape;          // Redondo, Ovalado, Irregular
     private Double diameter1;      // en mm
     private Double diameter2;      // null si es Redondo
-    private Integer colorValue;    // valor ARGB
+    private Long colorValue;    // valor ARGB
     private Boolean hurts;
     private Boolean hasChanged;
     private Boolean isCongenital;  // congénito o no
