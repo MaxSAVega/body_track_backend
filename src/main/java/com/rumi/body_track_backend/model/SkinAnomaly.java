@@ -38,4 +38,16 @@ public class SkinAnomaly {
     private String imagePath; // ruta o URL de la dirección
     private LocalDate appearanceDate;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

@@ -2,6 +2,7 @@ package com.rumi.body_track_backend.service;
 
 import com.rumi.body_track_backend.dto.AuthResponse;
 import com.rumi.body_track_backend.dto.LoginRequest;
+import com.rumi.body_track_backend.dto.RefreshRequest;
 import com.rumi.body_track_backend.dto.RegisterRequest;
 import com.rumi.body_track_backend.model.User;
 import com.rumi.body_track_backend.repository.UserRepository;
@@ -33,7 +34,8 @@ public class UserService {
         userRepository.save(user);
 
         String token = jwtService.generateToken(user.getEmail());
-        return new AuthResponse(token, user.getGender(), user.getName(), user.getEmail());
+        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
+        return new AuthResponse(token, refreshToken, user.getGender(), user.getName(), user.getEmail());
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -45,6 +47,21 @@ public class UserService {
         }
 
         String token = jwtService.generateToken(user.getEmail());
-        return new AuthResponse(token, user.getGender(), user.getName(), user.getEmail());
+        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
+        return new AuthResponse(token, refreshToken, user.getGender(), user.getName(), user.getEmail());
+    }
+
+    public AuthResponse refreshToken(RefreshRequest request) {
+        if (!jwtService.isRefreshTokenValid(request.getRefreshToken())) {
+            throw new RuntimeException("Refresh token inválido o expirado");
+        }
+
+        String email = jwtService.extractEmail(request.getRefreshToken());
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        String newToken = jwtService.generateToken(user.getEmail());
+        String newRefreshToken = jwtService.generateRefreshToken(user.getEmail());
+        return new AuthResponse(newToken, newRefreshToken, user.getGender(), user.getName(), user.getEmail());
     }
 }

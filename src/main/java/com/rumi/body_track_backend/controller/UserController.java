@@ -2,6 +2,7 @@ package com.rumi.body_track_backend.controller;
 
 import com.rumi.body_track_backend.dto.AuthResponse;
 import com.rumi.body_track_backend.dto.LoginRequest;
+import com.rumi.body_track_backend.dto.RefreshRequest;
 import com.rumi.body_track_backend.dto.RegisterRequest;
 import com.rumi.body_track_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +24,10 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(userService.login(request));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshRequest request) {
+        return ResponseEntity.ok(userService.refreshToken(request));
     }
 }
