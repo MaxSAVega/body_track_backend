@@ -4,6 +4,7 @@ import com.rumi.body_track_backend.dto.AuthResponse;
 import com.rumi.body_track_backend.dto.LoginRequest;
 import com.rumi.body_track_backend.dto.RefreshRequest;
 import com.rumi.body_track_backend.dto.RegisterRequest;
+import com.rumi.body_track_backend.dto.UpdateProfileRequest;
 import com.rumi.body_track_backend.model.User;
 import com.rumi.body_track_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,12 +31,15 @@ public class UserService {
         user.setBirthDate(request.getBirthDate());
         user.setGender(request.getGender());
         user.setPhone(request.getPhone());
+        user.setDni(request.getDni());
+        user.setHeight(request.getHeight());
+        user.setWeight(request.getWeight());
 
         userRepository.save(user);
 
         String token = jwtService.generateToken(user.getEmail());
         String refreshToken = jwtService.generateRefreshToken(user.getEmail());
-        return new AuthResponse(token, refreshToken, user.getGender(), user.getName(), user.getEmail());
+        return new AuthResponse(token, refreshToken, user.getGender(), user.getName(), user.getEmail(), user.getDni(), user.getHeight(), user.getWeight());
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -48,7 +52,7 @@ public class UserService {
 
         String token = jwtService.generateToken(user.getEmail());
         String refreshToken = jwtService.generateRefreshToken(user.getEmail());
-        return new AuthResponse(token, refreshToken, user.getGender(), user.getName(), user.getEmail());
+        return new AuthResponse(token, refreshToken, user.getGender(), user.getName(), user.getEmail(), user.getDni(), user.getHeight(), user.getWeight());
     }
 
     public AuthResponse refreshToken(RefreshRequest request) {
@@ -62,6 +66,38 @@ public class UserService {
 
         String newToken = jwtService.generateToken(user.getEmail());
         String newRefreshToken = jwtService.generateRefreshToken(user.getEmail());
-        return new AuthResponse(newToken, newRefreshToken, user.getGender(), user.getName(), user.getEmail());
+        return new AuthResponse(newToken, newRefreshToken, user.getGender(), user.getName(), user.getEmail(), user.getDni(), user.getHeight(), user.getWeight());
+    }
+
+    public AuthResponse updateProfile(String email, UpdateProfileRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (request.getName() != null && !request.getName().isBlank()) {
+            user.setName(request.getName());
+        }
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
+            userRepository.findByEmail(request.getEmail())
+                    .filter(other -> !other.getId().equals(user.getId()))
+                    .ifPresent(other -> {
+                        throw new RuntimeException("El email ya está registrado");
+                    });
+            user.setEmail(request.getEmail());
+        }
+        if (request.getDni() != null) {
+            user.setDni(request.getDni());
+        }
+        if (request.getHeight() != null) {
+            user.setHeight(request.getHeight());
+        }
+        if (request.getWeight() != null) {
+            user.setWeight(request.getWeight());
+        }
+
+        userRepository.save(user);
+
+        String token = jwtService.generateToken(user.getEmail());
+        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
+        return new AuthResponse(token, refreshToken, user.getGender(), user.getName(), user.getEmail(), user.getDni(), user.getHeight(), user.getWeight());
     }
 }

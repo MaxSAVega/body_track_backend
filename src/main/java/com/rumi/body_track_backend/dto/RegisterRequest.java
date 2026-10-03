@@ -11,4 +11,7 @@ public class RegisterRequest {
     private LocalDate birthDate;
     private String gender;
     private String phone;
+    private String dni;
+    private Double height;
+    private Double weight;
 }

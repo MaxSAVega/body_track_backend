@@ -4,6 +4,8 @@ import com.rumi.body_track_backend.dto.AuthResponse;
 import com.rumi.body_track_backend.dto.LoginRequest;
 import com.rumi.body_track_backend.dto.RefreshRequest;
 import com.rumi.body_track_backend.dto.RegisterRequest;
+import com.rumi.body_track_backend.dto.UpdateProfileRequest;
+import com.rumi.body_track_backend.service.JwtService;
 import com.rumi.body_track_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final JwtService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
@@ -29,5 +32,14 @@ public class UserController {
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshRequest request) {
         return ResponseEntity.ok(userService.refreshToken(request));
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<AuthResponse> updateProfile(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody UpdateProfileRequest request) {
+        String token = authHeader.substring(7);
+        String email = jwtService.extractEmail(token);
+        return ResponseEntity.ok(userService.updateProfile(email, request));
     }
 }

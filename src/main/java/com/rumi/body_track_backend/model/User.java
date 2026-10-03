@@ -24,6 +24,9 @@ public class User {
     private LocalDate birthDate;
     private String gender;
     private String phone;
+    private String dni;
+    private Double height;
+    private Double weight;
 
     private LocalDateTime createdAt;
 
