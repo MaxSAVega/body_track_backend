@@ -25,7 +25,14 @@ public class AnomalyResponse {
     private Double x;
     private Double y;
     private Double z;
-    private String imagePath;
+
+    /**
+     * Replaces the former {@code imagePath} field, which disclosed the internal file
+     * naming scheme, the anomaly id and the upload timestamp. Clients should treat
+     * this as a boolean and fetch bytes from {@code /anomalies/{id}/image}.
+     */
+    private Boolean hasImage;
+
     private LocalDate appearanceDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

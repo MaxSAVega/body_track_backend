@@ -31,3 +31,22 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Clinical images ###
+# CRITICAL: this directory holds real patient photographs. It was untracked but
+# NOT ignored, so a routine `git add -A` would have committed them to the
+# repository and pushed them to the remote. The files currently on disk are
+# deliberately left untouched.
+uploads/
+
+### Secrets and credentials ###
+# Never commit these. Everything sensitive arrives as an environment variable.
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+key.properties
+secrets.*

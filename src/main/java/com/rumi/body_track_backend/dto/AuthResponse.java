@@ -8,6 +8,13 @@ import lombok.Data;
 public class AuthResponse {
     private String token;
     private String refreshToken;
+
+    /**
+     * Additive. The client does not need to read it, but sending it means a future
+     * release can move off email-keyed lookups without another round of changes.
+     */
+    private Long userId;
+
     private String gender;
     private String name;
     private String email;
